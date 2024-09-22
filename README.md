@@ -1,0 +1,1 @@
+# plugins-gallery-block-lightbox
