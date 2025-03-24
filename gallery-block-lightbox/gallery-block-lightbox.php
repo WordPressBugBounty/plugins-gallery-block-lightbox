@@ -5,7 +5,7 @@
  * Description:  Adds a Lightbox to the Block Editor (Gutenberg) Gallery & Image Block.
  * Author:       Johannes Kinast <johannes@travel-dealz.de>
  * Author URI:   https://go-around.de
- * Version:     1.15
+ * Version:     1.16
  */
 namespace Gallery_Block_Lightbox;
 
@@ -49,8 +49,19 @@ function register_assets() {
 	 */
 	$baguettebox_captions = apply_filters( 'baguettebox_captions', 'function(t){var e=t.parentElement.classList.contains("wp-block-image")||t.parentElement.classList.contains("wp-block-media-text__media")?t.parentElement.querySelector("figcaption"):t.parentElement.parentElement.querySelector("figcaption,dd");return!!e&&e.innerHTML}' );
 
-	wp_add_inline_script( 'baguettebox', 'window.addEventListener("load", function() {baguetteBox.run("' . $baguettebox_selector . '",{captions:' . $baguettebox_captions . ',filter:' . $baguettebox_filter . ',ignoreClass:"' . $baguettebox_ignoreclass . '"});});' );
+	/**
+	 * Filters the animation attribute of baguetteBox.js
+	 *
+	 * @since 1.16
+	 *
+	 * @param string  $value  Use the given animation style on image transitions.
+	 * 'slideIn' | 'fadeIn' | 'false'
+	 */
+	$baguettebox_animation = apply_filters( 'baguettebox_animation', 'slideIn' );
 
+	$baguettebox_options = "{captions:{$baguettebox_captions},filter:{$baguettebox_filter},ignoreClass:'{$baguettebox_ignoreclass}',animation:'{$baguettebox_animation}'}";
+
+	wp_add_inline_script( "baguettebox", "window.addEventListener('load', function() {baguetteBox.run('{$baguettebox_selector}',{$baguettebox_options});});" );
 }
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\register_assets' );
 
